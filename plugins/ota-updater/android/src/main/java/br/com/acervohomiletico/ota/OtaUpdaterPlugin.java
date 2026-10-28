@@ -106,23 +106,54 @@ public class OtaUpdaterPlugin extends Plugin {
         if (file.exists() && !file.delete()) {
             throw new Exception("Não foi possível limpar o APK anterior");
         }
+        Exception last = null;
+        for (int attempt = 1; attempt <= 3; attempt++) {
+            try {
+                return downloadOnce(startUrl, file);
+            } catch (Exception e) {
+                last = e;
+                if (file.exists()) {
+                    file.delete();
+                }
+                try {
+                    Thread.sleep(800L * attempt);
+                } catch (InterruptedException ignored) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }
+        throw last != null ? last : new Exception("Falha no download");
+    }
+
+    private File downloadOnce(String startUrl, File file) throws Exception {
         HttpURLConnection conn = openFollowing(startUrl);
         int code = conn.getResponseCode();
         if (code < 200 || code > 299) {
+            conn.disconnect();
             throw new Exception("Download HTTP " + code);
         }
+        long expected = Build.VERSION.SDK_INT >= 24
+            ? conn.getContentLengthLong()
+            : conn.getContentLength();
+        long written = 0L;
         try (InputStream in = conn.getInputStream();
              OutputStream out = new java.io.FileOutputStream(file)) {
-            byte[] buf = new byte[8192];
+            byte[] buf = new byte[65536];
             int n;
             while ((n = in.read(buf)) >= 0) {
                 out.write(buf, 0, n);
+                written += n;
             }
+            out.flush();
         } finally {
             conn.disconnect();
         }
-        if (file.length() == 0L) {
-            throw new Exception("Arquivo de atualização vazio");
+        if (written < 200000L) {
+            throw new Exception("Arquivo de atualizacao incompleto (" + written + " bytes)");
+        }
+        if (expected > 0 && written != expected) {
+            throw new Exception("Download incompleto (" + written + " de " + expected + " bytes)");
         }
         return file;
     }
@@ -135,8 +166,8 @@ public class OtaUpdaterPlugin extends Plugin {
             conn.setRequestMethod("GET");
             conn.setRequestProperty("User-Agent", "AcervoHomiletico-Android");
             conn.setRequestProperty("Accept", "*/*");
-            conn.setConnectTimeout(20000);
-            conn.setReadTimeout(60000);
+            conn.setConnectTimeout(25000);
+            conn.setReadTimeout(120000);
             int code = conn.getResponseCode();
             if (code == 301 || code == 302 || code == 303 || code == 307 || code == 308) {
                 String loc = conn.getHeaderField("Location");

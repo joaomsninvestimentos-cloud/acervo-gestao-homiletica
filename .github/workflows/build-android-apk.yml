@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build-apk:
@@ -126,11 +128,40 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           mkdir -p dist
           cp "${{ steps.apk.outputs.path }}" dist/AcervoHomiletico.apk
+          NOTES="APK assinado do Acervo Homiletico ${VERSION}.
+
+No Poco / Xiaomi (MIUI) o Chrome costuma cortar o download do GitHub Releases.
+Prefira a pagina direta (sem redirect):
+
+https://joaomsninvestimentos-cloud.github.io/acervo-gestao-homiletica/download.html
+
+Se ja tiver a v1.0 (debug), desinstale antes. A v1.1+ usa a mesma chave de assinatura."
           if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
             gh release upload "$TAG" dist/AcervoHomiletico.apk --clobber --repo "${{ github.repository }}"
+            gh release edit "$TAG" --notes "$NOTES" --repo "${{ github.repository }}"
           else
             gh release create "$TAG" dist/AcervoHomiletico.apk \
               --title "v${VERSION} — APK Android" \
-              --notes "APK assinado do Acervo Homilético ${VERSION}. Instale este arquivo no celular. Atualizações seguintes aparecem no próprio app." \
+              --notes "$NOTES" \
               --repo "${{ github.repository }}"
           fi
+
+      - name: Montar pasta GitHub Pages (PWA + APK direto)
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          SIZE=$(stat -c%s "${{ steps.apk.outputs.path }}")
+          mkdir -p www/apk
+          cp "${{ steps.apk.outputs.path }}" www/apk/AcervoHomiletico.apk
+          printf '{"version":"%s","apk":"apk/AcervoHomiletico.apk","size":%s,"notes":"Download direto sem GitHub Releases"}\n' "$VERSION" "$SIZE" > www/version.json
+          touch www/.nojekyll
+          test -f www/download.html
+          test -f www/apk/AcervoHomiletico.apk
+          ls -lh www/apk www/version.json www/download.html
+
+      - name: Publicar GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./www
+          force_orphan: true
+          cname: ""

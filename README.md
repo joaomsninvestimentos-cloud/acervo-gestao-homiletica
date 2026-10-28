@@ -51,11 +51,15 @@ O aplicativo já vem populado com **61 passagens bíblicas** organizadas em **3 
 2. No GitHub, acesse **Settings ➔ Pages** e selecione a branch `main` (pasta `/root`).
 3. Abra o link gerado no navegador do celular (Android ou iPhone) e toque em **"Adicionar à tela inicial"** (*Add to Home Screen*) para instalá-lo como aplicativo com suporte offline via *Service Worker*.
 
-### Opção B — APK Android com atualização automática
-1. Instale a **v1.1.0** (ou posterior) pelo [Releases](https://github.com/joaomsninvestimentos-cloud/acervo-gestao-homiletica/releases). Essa versão já traz o atualizador OTA.
-2. A v1.0.0 era debug e **não atualiza sozinha**: desinstale-a antes de instalar a v1.1.0.
-3. Depois disso, cada tag `v*` gera um APK assinado com a mesma chave. O app avisa no celular e instala a versão nova.
-4. O workflow está em `.github/workflows/build-android-apk.yml` (Capacitor 6 + Java 17).
+### Opção B — APK Android (Poco / Xiaomi / Chrome)
+O Chrome no MIUI (Poco X4 Pro 5G) costuma **cortar o download** da aba Releases do GitHub. Use a pagina direta:
+
+1. Abra no celular: https://joaomsninvestimentos-cloud.github.io/acervo-gestao-homiletica/download.html
+2. Toque em **Baixar e instalar** e espere 100% (barra de progresso).
+3. Permita **Instalar apps desconhecidos** para o Chrome, se o Android pedir.
+4. Se a v1.0.0 (debug) estiver instalada, **desinstale antes**. A v1.1+ usa a mesma chave.
+
+A partir da v1.2.0 o APK tambem fica em `apk/AcervoHomiletico.apk` no GitHub Pages (sem redirect). O app avisa no celular quando houver versao nova.
 
 ### Opção C — Rodar Localmente no Computador
 ```bash
@@ -74,7 +78,8 @@ acervo-gestao-homiletica/
 ├── index.html                              # Interface principal Mobile/PWA + Modais + Modo Púlpito
 ├── styles.css                              # Design System Pastoral (Claro/Escuro, Kanban, Impressão)
 ├── app.js                                  # Lógica de estado, filtros, Modo Púlpito e Synth Worship Pad
-├── updater.js                              # Checagem OTA no Android (GitHub Releases)
+├── updater.js                              # Checagem OTA (GitHub Pages + Releases)
+├── download.html                           # Pagina de download direto do APK (MIUI)
 ├── manifest.json                           # Manifesto PWA instalável no celular
 ├── sw.js                                   # Service Worker para funcionamento 100% offline
 ├── package.json                            # Scripts NPM e dependências Capacitor Android

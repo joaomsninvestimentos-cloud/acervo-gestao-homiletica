@@ -1,6 +1,8 @@
 (function () {
   const REPO = 'joaomsninvestimentos-cloud/acervo-gestao-homiletica';
   const API = 'https://api.github.com/repos/' + REPO + '/releases/latest';
+  const PAGES_BASE = 'https://joaomsninvestimentos-cloud.github.io/acervo-gestao-homiletica/';
+  const PAGES_VERSION = PAGES_BASE + 'version.json';
   const SKIP_KEY = 'acervo_ota_skip';
 
   function parseVersion(v) {
@@ -56,10 +58,20 @@
       const info = await plugin.getVersion();
       return (info.version || '').replace(/-debug.*$/, '');
     }
-    return '1.1.0';
+    return '1.2.0';
   }
 
-  async function latestRelease() {
+  async function latestFromPages() {
+    const res = await fetch(PAGES_VERSION, { cache: 'no-store' });
+    if (!res.ok) return null;
+    const json = await res.json();
+    const tag = String(json.version || '').replace(/^v/i, '');
+    if (!tag || !json.apk) return null;
+    const url = String(json.apk).indexOf('http') === 0 ? json.apk : PAGES_BASE + json.apk;
+    return { tag, url, notes: json.notes || '', name: 'AcervoHomiletico.apk', size: json.size || 0 };
+  }
+
+  async function latestFromGithub() {
     const res = await fetch(API, {
       headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'AcervoHomiletico' },
     });
@@ -74,7 +86,18 @@
       url: apk.browser_download_url,
       notes: json.body || '',
       name: apk.name,
+      size: apk.size || 0,
     };
+  }
+
+  async function latestRelease() {
+    try {
+      const pages = await latestFromPages();
+      if (pages) return pages;
+    } catch {
+      /* Pages ainda nao publicado: usa Releases */
+    }
+    return latestFromGithub();
   }
 
   async function install(plugin, url) {

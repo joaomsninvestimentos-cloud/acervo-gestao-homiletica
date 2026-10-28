@@ -1,11 +1,11 @@
 {
   "name": "acervo-gestao-homiletica",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Plataforma Mobile/PWA & Android para gestão de esboços de pregação, estudos bíblicos expositivos (NVT, NVI, NTLH, A Mensagem) e louvores âncora.",
   "main": "index.html",
   "scripts": {
     "start": "npx serve . -l 8080",
-    "build:web": "mkdir -p www && cp -r index.html styles.css app.js updater.js manifest.json sw.js data icons www/",
+    "build:web": "mkdir -p www && cp -r index.html styles.css app.js updater.js manifest.json sw.js download.html data icons www/",
     "android:init": "npm run build:web && npx cap add android && npx cap sync android",
     "android:sync": "npm run build:web && npx cap sync android"
   },

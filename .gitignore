@@ -2,8 +2,10 @@ node_modules/
 www/
 /android/
 /ios/
+/apk/
 .DS_Store
 *.log
 *.keystore
 release.keystore
 local.properties
+*.apk
