@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1B2A4A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Acervo & Gestão Homilética — Tela Limpa & Gavetas Temáticas + IA</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top App Header -->
+    <header class="app-header">
+      <div class="header-top">
+        <div class="brand-group" id="homeCleanBtn" title="Voltar para a Tela Limpa (Fechar Gavetas)">
+          <div class="brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#E5B85B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              <path d="M12 6v7M9.5 8.5h5"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="brand-title">Acervo & Gestão Homilética</h1>
+            <p class="brand-subtitle">Toque em uma Gaveta para abrir • Feche para manter a Tela Limpa</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="icon-btn ai-glow" id="openAiHeaderBtn" title="Abrir Assistente Conversacional de IA para gerar pregações e exposições">
+            🤖 IA Homilética
+          </button>
+          <button class="icon-btn gold" id="newSermonBtn" title="Criar novo esboço manualmente">
+            ➕ Novo Esboço
+          </button>
+          <button class="icon-btn" id="toggleMobileFrameBtn" title="Alternar Moldura Mobile / Tela Expandida">
+            📱 Vista Mobile
+          </button>
+          <button class="icon-btn" id="toggleDarkBtn" title="Alternar Modo Noturno / Púlpito">
+            🌙 Tema
+          </button>
+          <button class="icon-btn" id="exportJsonBtn" title="Exportar Backup JSON">
+            ⬇️ Backup
+          </button>
+          <button class="icon-btn" id="resetDataBtn" title="Restaurar as 61 passagens originais">
+            ↺ 61
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Strip (1. Tela Limpa | 2. Gaveta Pregadas | 3. Gaveta Esboço Pronto | 4. Gaveta Em Acervo) -->
+      <div class="kpi-strip">
+        <div class="kpi-card active" data-status-drawer="clean" title="Fechar gavetas e deixar a tela limpa">
+          <div class="kpi-num" id="kpiTotal">61</div>
+          <div class="kpi-label">✨ Tela Limpa</div>
+        </div>
+        <div class="kpi-card" data-status-drawer="pregada" title="Abrir Gaveta: Exposição Pregada">
+          <div class="kpi-num" id="kpiPregada" style="color:#4ADE80;">6</div>
+          <div class="kpi-label">1. Pregadas</div>
+        </div>
+        <div class="kpi-card" data-status-drawer="pronto" title="Abrir Gaveta: Esboço Pronto">
+          <div class="kpi-num" id="kpiPronto" style="color:#FBBF24;">6</div>
+          <div class="kpi-label">2. Esboço Pronto</div>
+        </div>
+        <div class="kpi-card" data-status-drawer="acervo" title="Abrir Gaveta: Em Acervo">
+          <div class="kpi-num" id="kpiAcervo" style="color:#60A5FA;">49</div>
+          <div class="kpi-label">3. Em Acervo</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Ambient Worship Pad Bar (Web Audio Continuous Prayer Pad) -->
+    <div class="pad-bar">
+      <div class="pad-info">
+        <span class="pad-pulse" id="padPulse"></span>
+        <span id="padStatusText">Fundo de Oração / Púlpito (Tom: G)</span>
+      </div>
+      <div class="pad-controls">
+        <button class="key-btn" data-key="C">C</button>
+        <button class="key-btn" data-key="D">D</button>
+        <button class="key-btn" data-key="E">E</button>
+        <button class="key-btn" data-key="F">F</button>
+        <button class="key-btn active" data-key="G">G</button>
+        <button class="key-btn" data-key="A">A</button>
+        <button class="pad-toggle-btn" id="padToggleBtn">🎹 Tocar Pad</button>
+      </div>
+    </div>
+
+    <!-- Puxadores das Gavetas Temáticas (Compact Drawer Handles Bar) -->
+    <section class="drawer-handles-bar" aria-label="Gavetas Temáticas">
+      <div class="handles-top-row">
+        <span class="handles-label">🗄️ Escolha uma Gaveta Temática para abrir:</span>
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="search" id="searchInput" placeholder="Buscar versículo, livro ou louvor...">
+          <button class="clear-search" id="clearSearchBtn" title="Limpar busca">✕</button>
+        </div>
+      </div>
+      <div class="handles-grid" id="drawerHandlesGrid"></div>
+    </section>
+
+    <!-- Main Dynamic Container (Starts Clean until a Drawer is clicked!) -->
+    <main class="main-content" id="mainViewContainer"></main>
+
+    <!-- Bottom Mobile Bar -->
+    <nav class="bottom-nav" aria-label="Navegação Mobile">
+      <button class="nav-item active" data-nav="clean">
+        <span>✨</span>
+        <span>Tela Limpa</span>
+      </button>
+      <button class="nav-item" data-nav="pronto">
+        <span>🔥</span>
+        <span>Prontos (6)</span>
+      </button>
+      <button class="nav-item" data-nav="pregada">
+        <span>✅</span>
+        <span>Pregadas (6)</span>
+      </button>
+      <button class="nav-item" data-nav="acervo">
+        <span>💡</span>
+        <span>Acervo (49)</span>
+      </button>
+      <button class="nav-item" data-nav="ia">
+        <span>🤖</span>
+        <span>IA Púlpito</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Sermon Full Detail Sheet Modal -->
+  <div class="modal-backdrop" id="sermonDetailModal" role="dialog" aria-modal="true">
+    <div class="modal-sheet" id="sermonModalContent"></div>
+  </div>
+
+  <!-- Sermon Editor / Creator Modal -->
+  <div class="modal-backdrop" id="editorModal" role="dialog" aria-modal="true">
+    <div class="modal-sheet" id="editorModalContent"></div>
+  </div>
+
+  <!-- Fullscreen Pulpit Mode Overlay -->
+  <div class="pulpit-overlay" id="pulpitOverlay">
+    <div class="pulpit-topbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-weight:800;color:#E5B85B;">🎙️ MODO PÚLPITO</span>
+        <div class="pulpit-timer-box">
+          <span>⏱️</span>
+          <span class="pulpit-clock" id="pulpitClock">00:00</span>
+          <button class="icon-btn" id="pulpitTimerToggle">▶ Iniciar</button>
+          <button class="icon-btn" id="pulpitTimerReset">↺</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <button class="icon-btn gold" id="pulpitPadBtn">🎹 Fundo de Oração</button>
+        <button class="icon-btn" id="pulpitFontDown" title="Diminuir fonte">A-</button>
+        <button class="icon-btn" id="pulpitFontUp" title="Aumentar fonte">A+</button>
+        <button class="icon-btn" id="closePulpitBtn" style="background:#991B1B;border-color:#F87171;">✕ Sair do Púlpito</button>
+      </div>
+    </div>
+    <div class="pulpit-body" id="pulpitBody"></div>
+  </div>
+
+  <script src="data/acervo-61.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
