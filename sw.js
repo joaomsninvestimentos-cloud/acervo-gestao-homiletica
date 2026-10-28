@@ -1,9 +1,10 @@
-const CACHE_NAME = 'acervo-homiletico-v1';
+const CACHE_NAME = 'acervo-homiletico-v2';
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
   './app.js',
+  './updater.js',
   './data/acervo-61.js',
   './manifest.json',
   './icons/icon.svg'

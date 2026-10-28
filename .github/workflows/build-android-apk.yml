@@ -3,10 +3,11 @@ name: Build Android APK & Deploy PWA
 on:
   push:
     branches: [ "main", "master" ]
+    tags: [ "v*" ]
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-apk:
@@ -34,6 +35,7 @@ jobs:
           echo "ANDROID_SDK_ROOT=$SDK_DIR" >> "$GITHUB_ENV"
           echo "$SDK_DIR/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
           echo "$SDK_DIR/platform-tools" >> "$GITHUB_PATH"
+          echo "$SDK_DIR/build-tools/34.0.0" >> "$GITHUB_PATH"
           echo "sdk.dir=$SDK_DIR" > local.properties
 
       - name: Instalar plataformas Android
@@ -55,6 +57,11 @@ jobs:
             yes | "$SDKMANAGER" "platforms;android-34" "build-tools;34.0.0" || true
           fi
 
+      - name: Restaurar keystore de release
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | tr -d ' \r\n' | base64 -d > release.keystore
+          chmod 600 release.keystore
+
       - name: Instalar dependências e inicializar Capacitor Android
         run: |
           npm install
@@ -62,18 +69,64 @@ jobs:
           test -f www/index.html
           test -f www/data/acervo-61.js
           test -f www/icons/icon.svg
+          test -f www/updater.js
           npx cap add android
           npx cap sync android
 
-      - name: Compilar APK Debug instalável
+      - name: Definir versão Android a partir do package.json
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          CODE=$(echo "$VERSION" | awk -F. '{print $1*10000+$2*100+$3}')
+          python3 - << PY
+          import re
+          from pathlib import Path
+          p = Path("android/app/build.gradle")
+          t = p.read_text()
+          t = re.sub(r"versionCode\s+\d+", "versionCode ${CODE}", t, count=1)
+          t = re.sub(r'versionName\s+"[^"]+"', 'versionName "${VERSION}"', t, count=1)
+          p.write_text(t)
+          print("versionName=${VERSION} versionCode=${CODE}")
+          PY
+
+      - name: Compilar APK Release
         working-directory: ./android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          STORE="$GITHUB_WORKSPACE/release.keystore"
+          PASS=$(printf '%s' "$KEYSTORE_PASSWORD" | tr -d ' \r\n')
+          ./gradlew assembleRelease --no-daemon \
+            -Pandroid.injected.signing.store.file="$STORE" \
+            -Pandroid.injected.signing.store.password="$PASS" \
+            -Pandroid.injected.signing.key.alias=acervo \
+            -Pandroid.injected.signing.key.password="$PASS"
+
+      - name: Localizar APK gerado
+        id: apk
+        run: |
+          APK=$(find android/app/build/outputs/apk -name "*.apk" | head -1)
+          echo "path=$APK" >> "$GITHUB_OUTPUT"
+          ls -la android/app/build/outputs/apk/release || true
+          test -n "$APK"
 
       - name: Publicar APK como Artefato no GitHub
         uses: actions/upload-artifact@v4
         with:
           name: Acervo-Homiletico-Android-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: ${{ steps.apk.outputs.path }}
           if-no-files-found: error
+
+      - name: Publicar Release GitHub (tags v*)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION=$(node -p "require('./package.json').version")
+          mkdir -p dist
+          cp "${{ steps.apk.outputs.path }}" dist/AcervoHomiletico.apk
+          gh release create "$TAG" dist/AcervoHomiletico.apk \
+            --title "v${VERSION} — APK Android" \
+            --notes "APK assinado do Acervo Homilético ${VERSION}. Instale este arquivo no celular. Atualizações seguintes aparecem no próprio app." \
+            --repo "${{ github.repository }}"

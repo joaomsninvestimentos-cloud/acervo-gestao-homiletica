@@ -1,6 +1,9 @@
 node_modules/
 www/
-android/
-ios/
+/android/
+/ios/
 .DS_Store
 *.log
+*.keystore
+release.keystore
+local.properties

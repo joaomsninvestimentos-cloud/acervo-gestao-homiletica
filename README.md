@@ -51,11 +51,11 @@ O aplicativo já vem populado com **61 passagens bíblicas** organizadas em **3 
 2. No GitHub, acesse **Settings ➔ Pages** e selecione a branch `main` (pasta `/root`).
 3. Abra o link gerado no navegador do celular (Android ou iPhone) e toque em **"Adicionar à tela inicial"** (*Add to Home Screen*) para instalá-lo como aplicativo com suporte offline via *Service Worker*.
 
-### Opção B — Gerar o Aplicativo Android (`.apk`) Automaticamente no GitHub
-Este repositório já inclui o arquivo `.github/workflows/build-android-apk.yml` configurado com **Capacitor 6 + Java 17 + Android Gradle**:
-1. Ao enviar (*push*) o código para a branch `main` no GitHub, acesse a aba **Actions** do seu repositório.
-2. O workflow **"Build Android APK & Deploy PWA"** será executado automaticamente.
-3. Ao concluir, clique na execução e baixe o arquivo **`Acervo-Homiletico-Android-APK.zip`** (contendo o `app-debug.apk` pronto para instalar no Android).
+### Opção B — APK Android com atualização automática
+1. Instale a **v1.1.0** (ou posterior) pelo [Releases](https://github.com/joaomsninvestimentos-cloud/acervo-gestao-homiletica/releases). Essa versão já traz o atualizador OTA.
+2. A v1.0.0 era debug e **não atualiza sozinha**: desinstale-a antes de instalar a v1.1.0.
+3. Depois disso, cada tag `v*` gera um APK assinado com a mesma chave. O app avisa no celular e instala a versão nova.
+4. O workflow está em `.github/workflows/build-android-apk.yml` (Capacitor 6 + Java 17).
 
 ### Opção C — Rodar Localmente no Computador
 ```bash
@@ -74,6 +74,7 @@ acervo-gestao-homiletica/
 ├── index.html                              # Interface principal Mobile/PWA + Modais + Modo Púlpito
 ├── styles.css                              # Design System Pastoral (Claro/Escuro, Kanban, Impressão)
 ├── app.js                                  # Lógica de estado, filtros, Modo Púlpito e Synth Worship Pad
+├── updater.js                              # Checagem OTA no Android (GitHub Releases)
 ├── manifest.json                           # Manifesto PWA instalável no celular
 ├── sw.js                                   # Service Worker para funcionamento 100% offline
 ├── package.json                            # Scripts NPM e dependências Capacitor Android

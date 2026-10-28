@@ -1312,6 +1312,58 @@ body.mobile-frame-active .bottom-nav {
   color: var(--accent-gold);
 }
 
+.ota-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 8px 12px 0;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: var(--accent-gold-soft);
+  border: 1px solid var(--accent-gold);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ota-banner[hidden] {
+  display: none !important;
+}
+
+.ota-banner.ota-warn {
+  background: #FEE2E2;
+  border-color: #F87171;
+}
+
+.ota-banner.ota-info {
+  background: var(--status-acervo-bg);
+  border-color: var(--status-acervo-border);
+}
+
+.ota-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ota-btn {
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ota-btn.gold {
+  background: var(--accent-gold);
+  border-color: var(--accent-gold);
+  color: #1B2A4A;
+}
+
 @media print {
   .app-header, .drawer-handles-bar, .pad-bar, .bottom-nav, .modal-close, .status-stepper {
     display: none !important;
