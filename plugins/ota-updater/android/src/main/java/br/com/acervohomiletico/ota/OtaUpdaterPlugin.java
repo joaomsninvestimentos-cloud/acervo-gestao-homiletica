@@ -188,7 +188,7 @@ public class OtaUpdaterPlugin extends Plugin {
         try {
             Context ctx = getContext();
             Uri uri = FileProvider.getUriForFile(
-                ctx, ctx.getPackageName() + ".ota.fileprovider", file
+                ctx, ctx.getPackageName() + ".fileprovider", file
             );
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(uri, "application/vnd.android.package-archive");
