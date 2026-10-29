@@ -1,0 +1,26 @@
+name: Deploy Vercel (opcional)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  vercel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Montar www
+        run: |
+          npm run build:web
+          cp vercel.json www/vercel.json
+          test -f www/index.html
+      - name: Publicar na Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: www
+          vercel-args: --prod

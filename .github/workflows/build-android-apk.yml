@@ -128,7 +128,7 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           mkdir -p dist
           cp "${{ steps.apk.outputs.path }}" dist/AcervoHomiletico.apk
-          NOTES="APK assinado do Acervo Homiletico ${VERSION}. No Poco/Xiaomi (MIUI) o Chrome costuma cortar o download do GitHub Releases. Prefira: https://joaomsninvestimentos-cloud.github.io/acervo-gestao-homiletica/download.html — Se ja tiver a v1.0 (debug), desinstale antes."
+          NOTES="APK assinado do Acervo Homiletico ${VERSION}. No Poco/Xiaomi (MIUI) use a pagina direta: https://joaomsninvestimentos-cloud.github.io/acervo-gestao-homiletica/download.html — Se ja tiver a v1.0 (debug), desinstale antes. Atualizacoes seguintes aparecem no proprio app."
           if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
             gh release upload "$TAG" dist/AcervoHomiletico.apk --clobber --repo "${{ github.repository }}"
             gh release edit "$TAG" --notes "$NOTES" --repo "${{ github.repository }}"

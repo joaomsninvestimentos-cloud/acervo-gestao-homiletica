@@ -61,6 +61,11 @@ O Chrome no MIUI (Poco X4 Pro 5G) costuma **cortar o download** da aba Releases 
 
 A partir da v1.2.0 o APK tambem fica em `apk/AcervoHomiletico.apk` no GitHub Pages (sem redirect). O app avisa no celular quando houver versao nova.
 
+### Opcao D — Atualizacao automatica (Vercel)
+O APK no celular consulta `version.json` no GitHub Pages e, se existir, na Vercel (`acervo-gestao-homiletica.vercel.app`). Quando a versao for maior, aparece o banner **Atualizar**.
+
+Para ligar o canal Vercel: no repositorio, rode o workflow **Deploy Vercel (opcional)** depois de gravar os secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID` e `VERCEL_PROJECT_ID`. Sem esses secrets o app continua atualizando pelo GitHub Pages.
+
 ### Opção C — Rodar Localmente no Computador
 ```bash
 # Servir imediatamente com Python ou Node:

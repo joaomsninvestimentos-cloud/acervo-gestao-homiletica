@@ -116,6 +116,10 @@
       acervo = JSON.parse(JSON.stringify(window.ACERVO_INICIAL || []));
       saveData();
     }
+    acervo.forEach((item) => {
+      if (typeof item.anotacoesRetorno !== 'string') item.anotacoesRetorno = '';
+      if (typeof item.localMinistracao !== 'string') item.localMinistracao = '';
+    });
 
     try {
       const savedChat = localStorage.getItem(CHAT_KEY);
@@ -299,6 +303,12 @@
     });
   }
 
+  function extractYoutubeId(url) {
+    if (!url) return '';
+    const m = String(url).match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : '';
+  }
+
   function statusLabel(status) {
     if (status === 'pregada') return 'Exposição Pregada';
     if (status === 'pronto') return 'Esboço Pronto';
@@ -330,7 +340,7 @@
           ${(item.tags || []).slice(0, 2).map((tg) => `<span class="tag-item">#${tg}</span>`).join('')}
         </div>
         <div class="card-footer">
-          <span class="card-meta">📅 ${item.dataMinistracao || 'Sem data'}</span>
+          <span class="card-meta">📅 ${item.dataMinistracao || 'Sem data'}${item.status === 'pregada' && item.localMinistracao ? ' · ' + item.localMinistracao : ''}</span>
           <div class="card-actions">
             ${item.status === 'acervo' ? `
               <button class="mini-btn ai-mini ai-expand-btn" data-id="${item.id}" title="Gerar exposição profunda desta passagem com a IA">
@@ -1052,6 +1062,8 @@
       if (dataInput) item.dataMinistracao = dataInput;
       const localInput = prompt('Local / Culto de ministração:', item.localMinistracao || 'Culto de Celebração');
       if (localInput) item.localMinistracao = localInput;
+      const notas = prompt('Anotações de retorno (como a igreja recebeu, ajustes para a próxima):', item.anotacoesRetorno || '');
+      if (notas !== null) item.anotacoesRetorno = notas;
     } else if (newStatus === 'pronto') {
       if (!item.dataMinistracao || item.dataMinistracao === 'Em Fila de Desenvolvimento') {
         item.dataMinistracao = 'Pronto para Ministrar';
@@ -1188,6 +1200,14 @@
             </div>
           </div>
         </div>
+
+        ${item.status === 'pregada' || item.anotacoesRetorno ? `
+          <div class="retorno-card">
+            <div class="retorno-title">Anotacoes de retorno (pos-pulpito)</div>
+            <p class="retorno-meta">${item.localMinistracao || 'Local nao informado'} · ${item.dataMinistracao || ''}</p>
+            <p class="retorno-text">${item.anotacoesRetorno || 'Nenhuma anotacao ainda. Edite a ficha para registrar como a igreja recebeu a mensagem.'}</p>
+          </div>
+        ` : ''}
 
         <div class="worship-card">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">
@@ -1371,6 +1391,7 @@
       tags: ['Restauração', 'Fé'],
       dataMinistracao: 'Pronto para Ministrar',
       localMinistracao: 'Culto da Família',
+      anotacoesRetorno: '',
       versoes: { NVT: '', NVI: '', NTLH: '', MENSAGEM: '' },
       textosApoio: [],
       louvor: { titulo: '', artista: '', trecho: '', youtubeUrl: '', youtubeId: '', tomPad: 'G' },
@@ -1434,6 +1455,14 @@
             <label>Data / Status de Agenda</label>
             <input type="text" id="fData" value="${(item.dataMinistracao || '').replace(/"/g, '&quot;')}" placeholder="Ex: 2026-11-08 ou Pronto para Ministrar">
           </div>
+          <div class="form-group">
+            <label>Local / Culto de Ministracao</label>
+            <input type="text" id="fLocal" value="${(item.localMinistracao || '').replace(/"/g, '&quot;')}" placeholder="Ex: Culto da Familia (Domingo a noite)">
+          </div>
+          <div class="form-group full">
+            <label>Anotacoes de retorno (apos pregar)</label>
+            <textarea id="fRetorno" rows="2" placeholder="Como a igreja recebeu, ajustes, testemunhos, o que repetir ou cortar...">${item.anotacoesRetorno || ''}</textarea>
+          </div>
           <div class="form-group full">
             <label>Proposição Homilética Central</label>
             <input type="text" id="fProposicao" value="${(item.proposicao || '').replace(/"/g, '&quot;')}" placeholder="A ideia central da mensagem em uma frase clara">
@@ -1466,6 +1495,10 @@
           <div class="form-group full">
             <label>Trecho da Letra (Conexão com o Apelo)</label>
             <input type="text" id="fLouvorTrecho" value="${(item.louvor?.trecho || '').replace(/"/g, '&quot;')}">
+          </div>
+          <div class="form-group full">
+            <label>URL do YouTube (clipe / louvor ancora)</label>
+            <input type="url" id="fYoutube" value="${(item.louvor?.youtubeUrl || '').replace(/"/g, '&quot;')}" placeholder="https://www.youtube.com/watch?v=...">
           </div>
           <div class="form-group full">
             <label>Introdução & Contexto Histórico</label>
@@ -1520,6 +1553,8 @@
         status: document.getElementById('fStatus').value,
         tema: document.getElementById('fTema').value,
         dataMinistracao: document.getElementById('fData').value.trim(),
+        localMinistracao: document.getElementById('fLocal').value.trim(),
+        anotacoesRetorno: document.getElementById('fRetorno').value.trim(),
         proposicao: document.getElementById('fProposicao').value.trim(),
         versoes: {
           NVT: nvtVal,
@@ -1534,7 +1569,9 @@
           titulo: document.getElementById('fLouvorTitulo').value.trim() || 'Louvor de Ministração',
           artista: document.getElementById('fLouvorArtista').value.trim() || 'Adoração',
           tomPad: document.getElementById('fLouvorTom').value,
-          trecho: document.getElementById('fLouvorTrecho').value.trim()
+          trecho: document.getElementById('fLouvorTrecho').value.trim(),
+          youtubeUrl: (document.getElementById('fYoutube')?.value || '').trim() || item.louvor?.youtubeUrl || '',
+          youtubeId: extractYoutubeId((document.getElementById('fYoutube')?.value || '').trim()) || item.louvor?.youtubeId || ''
         },
         esboco: {
           introducao: document.getElementById('fIntro').value.trim(),

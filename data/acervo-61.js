@@ -17,6 +17,7 @@ window.ACERVO_INICIAL = [
     ],
     "dataMinistracao": "2026-08-16",
     "localMinistracao": "Culto da Família (Domingo à Noite)",
+    "anotacoesRetorno": "A igreja respondeu bem ao apelo sobre memoria pactual. Varios pediram oracao por luto recente. Manter o louvor Bondade de Deus no apelo.",
     "versoes": {
       "NVT": "“Todavia, recupero a esperança quando me lembro disto: O amor fiel do SENHOR jamais acaba! Suas misericórdias nunca têm fim; grande é sua fidelidade; suas misericórdias se renovam cada manhã. Portanto, digo a mim mesmo: ‘O SENHOR é minha herança; por isso, esperarei nele!’” (Lm 3:21-24 – NVT)",
       "NVI": "“Todavia, lembro-me também do que pode dar-me esperança: Graças ao grande amor do SENHOR é que não somos consumidos, pois as suas misericórdias são inesgotáveis. Renovam-se cada manhã; grande é a sua fidelidade! Digo a mim mesmo: A minha porção é o SENHOR; portanto, nele porei a minha esperança.” (Lm 3:21-24 – NVI)",
@@ -77,6 +78,7 @@ window.ACERVO_INICIAL = [
     ],
     "dataMinistracao": "2026-08-30",
     "localMinistracao": "Culto de Ensino Bíblico",
+    "anotacoesRetorno": "Turma de ensino pediu mais tempo no tópico da sabedoria (Tg 1:5). Encurtar a introducao na proxima.",
     "versoes": {
       "NVT": "“Meus irmãos, considerem motivo de grande alegria o fato de passarem por diversas provações, pois vocês sabem que, quando sua fé é posta à prova, a perseverança tem a oportunidade de crescer. E é necessário que ela cresça, para que vocês se tornem maduros e completos, sem que nada lhes falte. Se algum de vocês precisar de sabedoria, peça-a a nosso Deus generoso, e receberá. Ele não os repreenderá por pedirem.” (Tg 1:2-5 – NVT)",
       "NVI": "“Meus irmãos, considerem motivo de grande alegria o fato de passarem por diversas provações, pois vocês sabem que a prova da sua fé produz perseverança. E a perseverança deve ter ação completa, a fim de que vocês sejam maduros e íntegros, sem que lhes falte coisa alguma. Se algum de vocês tem falta de sabedoria, peça-a a Deus, que a todos dá livremente, de boa vontade; e lhe será concedida.” (Tg 1:2-5 – NVI)",
@@ -137,6 +139,7 @@ window.ACERVO_INICIAL = [
     ],
     "dataMinistracao": "2026-09-06",
     "localMinistracao": "Culto de Santa Ceia",
+    "anotacoesRetorno": "Combinou bem com a Ceia. Apelo de seguranca eterna tocou familias. Repetir o quadro de Rm 8:31-39 no pulpit.",
     "versoes": {
       "NVT": "“Que diremos diante disso? Se Deus é por nós, quem será contra nós? Se ele não poupou nem mesmo seu próprio Filho, mas o entregou por todos nós, acaso não nos dará todas as outras coisas? (...) Não, apesar de todas essas coisas, somos mais que vencedores por meio daquele que nos amou!” (Rm 8:31-32, 37 – NVT)",
       "NVI": "“Que diremos, pois, diante dessas coisas? Se Deus é por nós, quem será contra nós? Aquele que não poupou a seu próprio Filho, mas o entregou por todos nós, como não nos dará juntamente com ele, e de graça, todas as coisas? (...) Mas, em todas estas coisas somos mais que vencedores, por meio daquele que nos amou.” (Rm 8:31-32, 37 – NVI)",
@@ -197,6 +200,7 @@ window.ACERVO_INICIAL = [
     ],
     "dataMinistracao": "2026-09-13",
     "localMinistracao": "Culto de Oração e Intercessão",
+    "anotacoesRetorno": "Muitos testemunhos de ansiedade. O pad em G ajudou o momento de oracao. Guardar 8 min so para silencio.",
     "versoes": {
       "NVT": "“Não andem ansiosos por coisa alguma; pelo contrário, orem a respeito de tudo. Contem a Deus suas necessidades e não se esqueçam de agradecer-lhe. Então vocês experimentarão a paz de Deus, que excede todo entendimento e que guardará seu coração e sua mente em Cristo Jesus.” (Fp 4:6-7 – NVT)",
       "NVI": "“Não andem ansiosos por coisa alguma, mas em tudo, pela oração e súplicas, e com ação de graças, apresentem seus pedidos a Deus. E a paz de Deus, que excede todo o entendimento, guardará o coração e a mente de vocês em Cristo Jesus.” (Fp 4:6-7 – NVI)",
@@ -257,6 +261,7 @@ window.ACERVO_INICIAL = [
     ],
     "dataMinistracao": "2026-09-27",
     "localMinistracao": "Culto de Celebração Dominical",
+    "anotacoesRetorno": "Imagem das aguias funcionou. Jovens pediram a referencia completa de Is 40. Incluir no folder.",
     "versoes": {
       "NVT": "“Você não sabe? Nunca ouviu falar? O SENHOR é o Deus eterno, o Criador de toda a terra. Ele não se cansa nem fica exausto; ninguém pode medir sua sabedoria. Ele dá forças ao cansado e revigora o fraco. Até os jovens perdem as forças e se cansam, e os rapazes tropeçam e caem. Mas os que esperam no SENHOR renovarão suas forças. Voarão alto, como águias; correrão e não se cansarão, caminharão e não desfalecerão.” (Is 40:28-31 – NVT)",
       "NVI": "“Você não sabe? Não ouviu? O SENHOR é o Deus eterno, o Criador de toda a terra. Ele não se cansa nem fica exausto; sua sabedoria é insondável. Ele fortalece o cansado e dá grande vigor ao que está sem forças. Até os jovens se cansam e ficam exaustos, e os moços tropeçam e caem; mas aqueles que esperam no SENHOR renovam as suas forças. Voam alto como águias; correm e não ficam exaustos, andam e não se cansam.” (Is 40:28-31 – NVI)",
@@ -317,6 +322,7 @@ window.ACERVO_INICIAL = [
     ],
     "dataMinistracao": "2026-10-04",
     "localMinistracao": "Culto de Primícias e Consagração",
+    "anotacoesRetorno": "Lideranca nova presente. Reforcar Josue 1:8 (meditacao) na proxima visita pastoral.",
     "versoes": {
       "NVT": "“Esta é a minha ordem: Seja forte e corajoso! Não tenha medo nem desanime, pois o SENHOR, seu Deus, estará com você por onde você andar.” (Js 1:9 – NVT)",
       "NVI": "“Não fui eu que lhe ordenei? Seja forte e corajoso! Não se apavore, nem se desanime, pois o SENHOR, o seu Deus, estará com você por onde você andar.” (Js 1:9 – NVI)",

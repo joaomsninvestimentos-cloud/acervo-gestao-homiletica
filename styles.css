@@ -1405,6 +1405,34 @@ body.mobile-frame-active .bottom-nav {
   color: #1B2A4A;
 }
 
+.retorno-card {
+  background: var(--status-pregada-bg);
+  border: 1px solid var(--status-pregada-border);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.retorno-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--status-pregada);
+  margin-bottom: 4px;
+}
+
+.retorno-meta {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.retorno-text {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
 @media print {
   .app-header, .drawer-handles-bar, .pad-bar, .bottom-nav, .modal-close, .status-stepper {
     display: none !important;

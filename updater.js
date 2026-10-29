@@ -2,7 +2,11 @@
   const REPO = 'joaomsninvestimentos-cloud/acervo-gestao-homiletica';
   const API = 'https://api.github.com/repos/' + REPO + '/releases/latest';
   const PAGES_BASE = 'https://joaomsninvestimentos-cloud.github.io/acervo-gestao-homiletica/';
-  const PAGES_VERSION = PAGES_BASE + 'version.json';
+  const VERCEL_BASE = 'https://acervo-gestao-homiletica.vercel.app/';
+  const CHANNELS = [
+    { base: PAGES_BASE, version: PAGES_BASE + 'version.json' },
+    { base: VERCEL_BASE, version: VERCEL_BASE + 'version.json' }
+  ];
   const SKIP_KEY = 'acervo_ota_skip';
 
   function parseVersion(v) {
@@ -58,17 +62,29 @@
       const info = await plugin.getVersion();
       return (info.version || '').replace(/-debug.*$/, '');
     }
-    return '1.2.0';
+    return '1.3.0';
   }
 
-  async function latestFromPages() {
-    const res = await fetch(PAGES_VERSION, { cache: 'no-store' });
+  async function latestFromChannel(channel) {
+    const res = await fetch(channel.version, { cache: 'no-store' });
     if (!res.ok) return null;
     const json = await res.json();
     const tag = String(json.version || '').replace(/^v/i, '');
     if (!tag || !json.apk) return null;
-    const url = String(json.apk).indexOf('http') === 0 ? json.apk : PAGES_BASE + json.apk;
+    const url = String(json.apk).indexOf('http') === 0 ? json.apk : channel.base + json.apk;
     return { tag, url, notes: json.notes || '', name: 'AcervoHomiletico.apk', size: json.size || 0 };
+  }
+
+  async function latestFromPages() {
+    for (let i = 0; i < CHANNELS.length; i++) {
+      try {
+        const hit = await latestFromChannel(CHANNELS[i]);
+        if (hit) return hit;
+      } catch {
+        /* tenta o proximo canal */
+      }
+    }
+    return null;
   }
 
   async function latestFromGithub() {
