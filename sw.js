@@ -1,4 +1,4 @@
-const CACHE_NAME = 'acervo-homiletico-v4';
+const CACHE_NAME = 'acervo-homiletico-v5';
 const ASSETS = [
   './',
   './index.html',

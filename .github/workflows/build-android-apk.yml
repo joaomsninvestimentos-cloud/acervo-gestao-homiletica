@@ -74,6 +74,8 @@ jobs:
           test -f www/updater.js
           npx cap add android
           npx cap sync android
+          python3 scripts/make-icons.py
+          python3 scripts/harden-android.py
 
       - name: Definir versão Android a partir do package.json
         run: |
@@ -104,13 +106,36 @@ jobs:
             -Pandroid.injected.signing.key.alias=acervo \
             -Pandroid.injected.signing.key.password="$PASS"
 
+      - name: Alinhar e assinar APK (v1/v2/v3)
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          RAW=$(find android/app/build/outputs/apk -name "*.apk" | head -1)
+          test -n "$RAW"
+          PASS=$(printf '%s' "$KEYSTORE_PASSWORD" | tr -d ' \r\n')
+          STORE="$GITHUB_WORKSPACE/release.keystore"
+          mkdir -p dist
+          zipalign -f -p 4 "$RAW" dist/AcervoHomiletico-aligned.apk
+          apksigner sign \
+            --ks "$STORE" \
+            --ks-key-alias acervo \
+            --ks-pass "pass:$PASS" \
+            --key-pass "pass:$PASS" \
+            --v1-signing-enabled true \
+            --v2-signing-enabled true \
+            --v3-signing-enabled true \
+            --out dist/AcervoHomiletico.apk \
+            dist/AcervoHomiletico-aligned.apk
+          apksigner verify --verbose dist/AcervoHomiletico.apk
+          aapt dump badging dist/AcervoHomiletico.apk | head -20 || true
+
       - name: Localizar APK gerado
         id: apk
         run: |
-          APK=$(find android/app/build/outputs/apk -name "*.apk" | head -1)
+          APK="$GITHUB_WORKSPACE/dist/AcervoHomiletico.apk"
           echo "path=$APK" >> "$GITHUB_OUTPUT"
-          ls -la android/app/build/outputs/apk/release || true
-          test -n "$APK"
+          ls -la dist
+          test -f "$APK"
 
       - name: Publicar APK como Artefato no GitHub
         uses: actions/upload-artifact@v4
@@ -128,7 +153,7 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           mkdir -p dist
           cp "${{ steps.apk.outputs.path }}" dist/AcervoHomiletico.apk
-          NOTES="APK assinado do Acervo Homiletico ${VERSION}. No Poco/Xiaomi (MIUI) use a pagina direta: https://joaomsninvestimentos-cloud.github.io/acervo-gestao-homiletica/download.html — Se ja tiver a v1.0 (debug), desinstale antes. Atualizacoes seguintes aparecem no proprio app."
+          NOTES="APK assinado v1/v2/v3 do Acervo Homiletico ${VERSION}, sem permissao de instalar outros apps (Play Protect). Baixe em https://joaomsninvestimentos-cloud.github.io/acervo-gestao-homiletica/download.html — Se a v1.0 debug estiver instalada, desinstale antes."
           if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
             gh release upload "$TAG" dist/AcervoHomiletico.apk --clobber --repo "${{ github.repository }}"
             gh release edit "$TAG" --notes "$NOTES" --repo "${{ github.repository }}"

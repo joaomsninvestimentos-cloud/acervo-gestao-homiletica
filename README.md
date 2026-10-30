@@ -61,6 +61,8 @@ O Chrome no MIUI (Poco X4 Pro 5G) costuma **cortar o download** da aba Releases 
 
 A partir da v1.2.0 o APK tambem fica em `apk/AcervoHomiletico.apk` no GitHub Pages (sem redirect). O app avisa no celular quando houver versao nova.
 
+A v1.3.1 remove a permissao `REQUEST_INSTALL_PACKAGES` (o Play Protect barrava o sideload por causa dela), assina o APK em v1/v2/v3 e nao permite trafego HTTP. Se o Protect ainda aparecer, toque em Mais detalhes e Instalar mesmo assim.
+
 ### Opcao D — Atualizacao automatica (Vercel)
 O APK no celular consulta `version.json` no GitHub Pages e, se existir, na Vercel (`acervo-gestao-homiletica.vercel.app`). Quando a versao for maior, aparece o banner **Atualizar**.
 

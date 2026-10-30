@@ -3,11 +3,13 @@
   const API = 'https://api.github.com/repos/' + REPO + '/releases/latest';
   const PAGES_BASE = 'https://joaomsninvestimentos-cloud.github.io/acervo-gestao-homiletica/';
   const VERCEL_BASE = 'https://acervo-gestao-homiletica.vercel.app/';
+  const DOWNLOAD_PAGE = PAGES_BASE + 'download.html';
   const CHANNELS = [
     { base: PAGES_BASE, version: PAGES_BASE + 'version.json' },
     { base: VERCEL_BASE, version: VERCEL_BASE + 'version.json' }
   ];
   const SKIP_KEY = 'acervo_ota_skip';
+  const APP_VERSION = '1.3.1';
 
   function parseVersion(v) {
     return String(v || '')
@@ -58,11 +60,15 @@
   }
 
   async function currentVersion(plugin) {
-    if (plugin) {
-      const info = await plugin.getVersion();
-      return (info.version || '').replace(/-debug.*$/, '');
+    if (plugin && typeof plugin.getVersion === 'function') {
+      try {
+        const info = await plugin.getVersion();
+        return (info.version || '').replace(/-debug.*$/, '');
+      } catch {
+        return APP_VERSION;
+      }
     }
-    return '1.3.0';
+    return APP_VERSION;
   }
 
   async function latestFromChannel(channel) {
@@ -116,48 +122,32 @@
     return latestFromGithub();
   }
 
-  async function install(plugin, url) {
-    const perm = await plugin.canInstall();
-    if (!perm.allowed) {
-      setBanner(
-        '<span>Permita instalar apps deste aplicativo e toque em Atualizar de novo.</span>' +
-        '<button type="button" class="ota-btn" id="otaPermBtn">Permitir</button>',
-        'warn'
-      );
-      document.getElementById('otaPermBtn')?.addEventListener('click', () => {
-        plugin.requestInstallPermission();
-      });
+  function openDownloadPage() {
+    const cap = window.Capacitor;
+    if (cap && cap.Plugins && cap.Plugins.Browser && typeof cap.Plugins.Browser.open === 'function') {
+      cap.Plugins.Browser.open({ url: DOWNLOAD_PAGE });
       return;
     }
-    setBanner('<span>Baixando atualização…</span>', 'info');
-    await plugin.downloadAndInstall({ url });
-    setBanner('<span>Confirme a instalação no Android.</span>', 'info');
+    window.open(DOWNLOAD_PAGE, '_blank');
   }
 
   async function check() {
-    const plugin = await nativePlugin();
-    if (!plugin) return;
     try {
+      const plugin = await nativePlugin();
       const installed = await currentVersion(plugin);
       const latest = await latestRelease();
       if (compareVersions(latest.tag, installed) <= 0) return;
       if (sessionStorage.getItem(SKIP_KEY) === latest.tag) return;
 
       setBanner(
-        '<span>Nova versão <strong>v' + latest.tag + '</strong> disponível.</span>' +
+        '<span>Nova versao <strong>v' + latest.tag + '</strong> disponivel.</span>' +
         '<span class="ota-actions">' +
-        '<button type="button" class="ota-btn gold" id="otaUpdateBtn">Atualizar</button>' +
+        '<button type="button" class="ota-btn gold" id="otaUpdateBtn">Baixar atualizacao</button>' +
         '<button type="button" class="ota-btn" id="otaLaterBtn">Depois</button>' +
         '</span>',
         'update'
       );
-      document.getElementById('otaUpdateBtn')?.addEventListener('click', async () => {
-        try {
-          await install(plugin, latest.url);
-        } catch (e) {
-          setBanner('<span>Falha ao atualizar: ' + (e.message || e) + '</span>', 'warn');
-        }
-      });
+      document.getElementById('otaUpdateBtn')?.addEventListener('click', openDownloadPage);
       document.getElementById('otaLaterBtn')?.addEventListener('click', () => {
         sessionStorage.setItem(SKIP_KEY, latest.tag);
         hideBanner();
