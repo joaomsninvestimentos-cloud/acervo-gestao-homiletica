@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1B2A4A">
+  <title>Baixar Acervo Homilético — APK Android</title>
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <style>
+    :root {
+      --navy: #1B2A4A;
+      --gold: #E5B85B;
+      --bg: #0F172A;
+      --card: #162238;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(180deg, #0F172A 0%, #1B2A4A 100%);
+      color: #F8FAFC;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+    .wrap { max-width: 560px; margin: 0 auto; }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .brand svg { width: 44px; height: 44px; }
+    h1 { font-size: 1.35rem; font-weight: 800; }
+    .sub { color: #CBD5E1; font-size: 0.88rem; margin-top: 4px; }
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(229, 184, 91, 0.35);
+      border-radius: 18px;
+      padding: 22px 20px;
+      margin-bottom: 16px;
+    }
+    .ver {
+      display: inline-block;
+      background: rgba(229, 184, 91, 0.18);
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .size { color: #94A3B8; font-size: 0.82rem; margin-bottom: 16px; }
+    .btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: linear-gradient(135deg, #D4A13E 0%, #B8862D 100%);
+      color: #0F172A;
+      font-weight: 800;
+      font-size: 1.02rem;
+      padding: 14px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:disabled { opacity: 0.55; cursor: wait; }
+    .btn.ghost {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.22);
+      color: #F8FAFC;
+      margin-top: 10px;
+      font-size: 0.88rem;
+    }
+    .progress {
+      display: none;
+      margin-top: 14px;
+      background: #0B101B;
+      border-radius: 8px;
+      overflow: hidden;
+      height: 10px;
+    }
+    .progress.on { display: block; }
+    .bar { height: 100%; width: 0; background: var(--gold); transition: width 0.2s; }
+    .status { margin-top: 10px; font-size: 0.84rem; color: #CBD5E1; min-height: 1.2em; }
+    .status.err { color: #FCA5A5; }
+    ol { padding-left: 18px; color: #CBD5E1; font-size: 0.88rem; line-height: 1.65; }
+    ol li { margin-bottom: 6px; }
+    a.link { color: var(--gold); }
+    .warn {
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.84rem;
+      color: #FDE68A;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#E5B85B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        <path d="M12 6v7M9.5 8.5h5"/>
+      </svg>
+      <div>
+        <h1>Acervo Homiletico</h1>
+        <p class="sub">Download direto do APK (sem GitHub Releases)</p>
+      </div>
+    </div>
+
+    <div class="card">
+        <span class="ver" id="verBadge">v1.3.1</span>
+      <p class="size" id="sizeLine">APK assinado (v2/v3) para Android 6+</p>
+      <button class="btn" id="dlBtn" type="button">Baixar e instalar no celular</button>
+      <a class="btn ghost" id="fallbackLink" href="apk/AcervoHomiletico.apk" download="AcervoHomiletico.apk">Se o botao falhar, toque aqui</a>
+      <div class="progress" id="prog"><div class="bar" id="bar"></div></div>
+      <p class="status" id="status"></p>
+      <div class="warn">
+        Esta versao nao pede permissao de instalar outros apps (o Play Protect barrava isso).
+        No Poco / Xiaomi use esta pagina, nao a aba Releases do GitHub.
+      </div>
+    </div>
+
+    <div class="card">
+      <strong style="display:block;margin-bottom:8px;">Se o Play Protect aparecer</strong>
+      <ol>
+        <li>Toque em <strong>Mais detalhes</strong> (ou Instalar mesmo assim).</li>
+        <li>Confirme <strong>Instalar</strong>. O aviso some depois que o Google analisa o APK.</li>
+        <li>Se recusar de vez: abra <strong>Play Store &gt; perfil &gt; Play Protect &gt; Configuracoes</strong> e desligue a verificacao so para esta instalacao; depois ligue de novo.</li>
+        <li>Se a v1.0 (debug) estiver instalada, desinstale antes.</li>
+      </ol>
+      <p style="margin-top:10px;font-size:0.82rem;color:#94A3B8;">
+        App web: <a class="link" href="./index.html">abrir no navegador</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const APK = 'apk/AcervoHomiletico.apk';
+    const btn = document.getElementById('dlBtn');
+    const bar = document.getElementById('bar');
+    const prog = document.getElementById('prog');
+    const status = document.getElementById('status');
+    const verBadge = document.getElementById('verBadge');
+    const sizeLine = document.getElementById('sizeLine');
+
+    function fmt(n) {
+      if (!n) return '';
+      return (n / 1048576).toFixed(2) + ' MB';
+    }
+
+    fetch('version.json', { cache: 'no-store' })
+      .then((r) => r.ok ? r.json() : null)
+      .then((j) => {
+        if (!j) return;
+        if (j.version) verBadge.textContent = 'v' + String(j.version).replace(/^v/i, '');
+        if (j.size) sizeLine.textContent = 'APK assinado · ' + fmt(j.size);
+      })
+      .catch(function () {});
+
+    btn.addEventListener('click', async function () {
+      btn.disabled = true;
+      prog.classList.add('on');
+      status.className = 'status';
+      status.textContent = 'Iniciando download...';
+      try {
+        const res = await fetch(APK, { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const total = Number(res.headers.get('Content-Length') || 0);
+        const reader = res.body && res.body.getReader ? res.body.getReader() : null;
+        const chunks = [];
+        let received = 0;
+        if (reader) {
+          while (true) {
+            const step = await reader.read();
+            if (step.done) break;
+            chunks.push(step.value);
+            received += step.value.length;
+            if (total) {
+              const pct = Math.min(100, Math.round((received / total) * 100));
+              bar.style.width = pct + '%';
+              status.textContent = 'Baixando ' + pct + '% · ' + fmt(received) + ' de ' + fmt(total);
+            } else {
+              status.textContent = 'Baixando ' + fmt(received) + '...';
+            }
+          }
+        } else {
+          const buf = await res.arrayBuffer();
+          chunks.push(new Uint8Array(buf));
+          received = buf.byteLength;
+        }
+        if (total && received !== total) {
+          throw new Error('Download incompleto (' + received + ' de ' + total + ' bytes)');
+        }
+        if (received < 200000) {
+          throw new Error('Arquivo muito pequeno. Tente de novo.');
+        }
+        bar.style.width = '100%';
+        const blob = new Blob(chunks, { type: 'application/vnd.android.package-archive' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'AcervoHomiletico.apk';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        status.textContent = 'Download completo (' + fmt(received) + '). Abra o APK para instalar.';
+      } catch (err) {
+        status.className = 'status err';
+        status.textContent = 'Falha: ' + (err.message || err) + '. Use o botao "Se o botao falhar".';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
